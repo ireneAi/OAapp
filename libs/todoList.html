@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>常州OA-待办事项</title>
+    <script src="../js/mui.min.js"></script>
+    <script src="../js/angular-1.0.1.js"></script>
+    <script src="../js/angular-cookies.js"></script>
+    <script src="../js/common.js"></script>
+    <link href="../css/mui.css" rel="stylesheet"/>
+    <link href="../css/iconfont.css" rel="stylesheet"/>
+    <link href="../css/main.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="../css/feedback.css" />
+    <link href="../css/todolist.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+        mui.init();
+    </script>
+</head>
+<body class="mui-fullscreen job" ng-app="app" ng-controller="indexCtrl">
+	<!--页面主结构开始-->
+	<div id="app" class="mui-views">
+		<div class="mui-view">
+			<div class="mui-navbar">
+			</div>
+			<div class="mui-pages">
+			</div>
+		</div>
+	</div>
+	<!--页面主结构结束-->
+	<div class="mui-page" id="todolist">
+		<div class="mui-navbar-inner mui-bar mui-bar-nav">
+			<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+				<span class="mui-icon mui-icon-left-nav"></span>
+			</button>
+			<h1 class="mui-center mui-title">待办事项</h1>
+		</div>		
+	    <div class="mui-page-content">	    	
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-media">
+							<a class="mui-navigate-right" href="t_main.html">
+								<div class="mui-media-body">
+									办公物品采购申请
+									<p class="mui-ellipsis f16 mui-col-xs-10">采购了某某某</p>
+									<p class="mui-ellipsis">2016/06/06 21:00:00</p>
+								</div>
+							</a>
+						</li>			 
+					</ul>		
+			        <div class="mui-button-row">
+			            <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined">加载更多</button>
+			        </div>
+			    </div>
+			</div>
+		</div>
+</div>
+<script src="../js/mui.view.js "></script>
+<script src='../js/feedback.js'></script>
+<script type="text/javascript">
+	//初始化单页view
+	var viewApi = mui('#app').view({
+		defaultPage: '#todolist'
+	});
+	
+	//初始化单页的区域滚动
+	mui('.mui-scroll-wrapper').scroll();
+		
+    angular.module('app', ["ngCookies"])
+            .controller('indexCtrl', function ($scope, $http, $cookieStore) {
+               
+            })
+</script>
+</body>
+</html>

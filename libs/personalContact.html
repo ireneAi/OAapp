@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>常州OA - 通讯录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.css">
+		<link rel="stylesheet" href="../css/contact.css"/>		
+	    <script src="../js/angular-1.0.1.js"></script>
+	    <script src="../js/angular-cookies.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">个人通讯录</h1>
+		</header>
+		<div class="mui-content">
+			<div id="tabbar-with-contact" class="mui-control-content  mui-active">				
+				<div class="mui-table-view ">
+					<div class=" mui-collapse mui-table-view-cell mui-active">
+						<a class="mui-navigate-right" href="#">搜索</a>
+						<div class="mui-collapse-content">
+							<form class="mui-input-group">
+								<div class="mui-input-row">
+									<label>姓名</label>
+									<input type="text" class="mui-input-clear" placeholder="姓名">
+								</div>					
+								<div class="mui-input-row">
+									<label>职务</label>
+									<select>
+										<option value="item-1">职务</option>
+										<option value="item-2">职务2</option>
+										<option value="item-3">职务3</option>
+										<option value="item-4">职务4</option>
+									</select>
+								</div>
+								<div class="mui-input-row">
+									<label>单位</label>
+									<input type="text" class="mui-input-clear" placeholder="单位名称">
+								</div>
+								<div class="mui-button-row">
+									<button type="button" class="mui-btn mui-btn-primary" onclick="return false;">搜索</button>
+								</div>					
+							</form>		
+						</div>
+					</div>	
+				</div>	
+				<h4 class="title">个人通讯录</h4>
+				<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+				<li class="mui-table-view-cell">
+					<div class="mui-slider-cell">
+						<div class="oa-contact-cell mui-table">
+							<div class="oa-contact-avatar mui-table-cell">
+								<img src="../images/user.png" />
+							</div>
+							<div class="oa-contact-content mui-table-cell">
+								<a href="p_contact.html">
+									<div class="mui-clearfix">
+										<h4 class="oa-contact-name">叶文洁</h4>
+										<span class="oa-contact-position mui-h6">董事长</span>
+									</div>
+									<p class="oa-contact-email mui-h6">
+										yewenjie@sina.com
+									</p>
+								</a>
+							</div>
+						</div>
+					</div>
+				</li>			
+				</ul>
+			</div>	
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script>
+		
+	</script>
+</html>

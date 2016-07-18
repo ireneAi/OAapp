@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>常州OA-工作提醒</title>
+    <script src="../js/mui.min.js"></script>
+    <script src="../js/angular-1.0.1.js"></script>
+    <script src="../js/angular-cookies.js"></script>
+    <script src="../js/common.js"></script>
+    <link href="../css/mui.css" rel="stylesheet"/>
+    <link href="../css/iconfont.css" rel="stylesheet"/>
+    <link href="../css/main.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+        mui.init();
+    </script>
+</head>
+<body>
+<div class="mui-content job" ng-app="app" ng-controller="indexCtrl">
+	<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">通知公告</h1>
+	</header>
+    <div class="mui-content">
+		<ul class="mui-table-view">
+			 <li class="mui-table-view-cell">
+			 	<a href="a_main.html">
+				 	<h4>关于XXXXX的通知。</h4>
+				 	<div class="mui-content">
+				 		<p class="worktext" style="float: left;">2016/06/06 21:00:00</p>		 
+			 			<div class="mui-btn mui-btn-primary" style="float: right;">
+							查看
+						</div>			 		
+				 	</div>	
+			 	</a>
+			 </li>
+		</ul>		
+        <div class="mui-button-row">
+            <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined">加载更多</button>
+        </div>
+	</div>
+</div>
+<script type="text/javascript">
+    angular.module('app', ["ngCookies"])
+            .controller('indexCtrl', function ($scope, $http, $cookieStore) {
+               
+            })
+</script>
+</body>
+</html>

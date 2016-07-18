@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>常州OA - 通讯录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../css/app.css"/>		
+	    <script src="../js/angular-1.0.1.js"></script>
+	    <script src="../js/angular-cookies.js"></script>
+		<style>			
+			.title{
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			
+			.oa-contact-cell.mui-table .mui-table-cell {
+				padding: 11px 0;
+				vertical-align: middle;
+			}
+			
+			.oa-contact-cell {
+				position: relative;
+				margin: -11px 0;
+			}
+	
+			.oa-contact-avatar {
+				width: 75px;
+			}
+			.oa-contact-avatar img {
+				border-radius: 50%;
+			}
+			.oa-contact-content {
+				width: 100%;
+			}
+			.oa-contact-name {
+				margin-right: 20px;
+			}
+			.oa-contact-name, oa-contact-position {
+				float: left;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">个人通讯录</h1>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="#tabbar-with-contact">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">个人通讯录</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-contact-comment">
+				<span class="mui-icon  mui-icon-contact"></span>
+				<span class="mui-tab-label">公共通讯录</span>
+			</a>
+		</nav>
+		<div class="mui-content">
+			<div id="tabbar-with-contact" class="mui-control-content  mui-active">
+				<div class="title">个人通讯录</div>
+				<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+				<li class="mui-table-view-cell">
+					<div class="mui-slider-cell">
+						<div class="oa-contact-cell mui-table">
+							<div class="oa-contact-avatar mui-table-cell">
+								<img src="../images/user.png" />
+							</div>
+							<div class="oa-contact-content mui-table-cell">
+								<div class="mui-clearfix">
+									<h4 class="oa-contact-name">叶文洁</h4>
+									<span class="oa-contact-position mui-h6">董事长</span>
+								</div>
+								<p class="oa-contact-email mui-h6">
+									yewenjie@sina.com
+								</p>
+							</div>
+						</div>
+					</div>
+				</li>				
+				</ul>
+			</div>	
+			<div id="tabbar-with-contact-comment" class="mui-control-content">
+				<div class="title">公共通讯录</div>
+				<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+				<li class="mui-table-view-cell">
+					<div class="mui-slider-cell">
+						<div class="oa-contact-cell mui-table">
+							<div class="oa-contact-avatar mui-table-cell">
+								<img src="../images/user.png" />
+							</div>
+							<div class="oa-contact-content mui-table-cell">
+								<div class="mui-clearfix">
+									<h4 class="oa-contact-name">叶文洁</h4>
+									<span class="oa-contact-position mui-h6">董事长</span>
+								</div>
+								<p class="oa-contact-email mui-h6">
+									yewenjie@sina.com
+								</p>
+							</div>
+						</div>
+					</div>
+				</li>				
+				</ul>
+			</div>			
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+	</script>
+</html>

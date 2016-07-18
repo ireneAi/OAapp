@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>常州OA首页</title>
+    <script src="js/mui.min.js"></script>
+    <script src="js/angular-1.0.1.js"></script>
+    <script src="js/angular-cookies.js"></script>
+    <script src="js/common.js"></script>
+    <link href="css/mui.css" rel="stylesheet"/>
+    <link href="css/iconfont.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+        mui.init();
+    </script>
+</head>
+<body>
+<div class="mui-content" ng-app="app" ng-controller="indexCtrl">
+    <div class="mui-input-row">        
+		<div id="slider" class="mui-slider" >
+			<div class="mui-slider-group mui-slider-loop">
+				<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+				<div class="mui-slider-item mui-slider-item-duplicate">
+					<a href="#">
+						<img src="images/2.jpg">
+					</a>
+				</div>
+				<!-- 第一张 -->
+				<div class="mui-slider-item">
+					<a href="#">
+						<img src="images/2.jpg">
+					</a>
+				</div>
+				<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+				<div class="mui-slider-item mui-slider-item-duplicate">
+					<a href="#">
+						<img src="images/2.jpg">
+					</a>
+				</div>
+			</div>
+			<div class="mui-slider-indicator">
+				<div class="mui-indicator mui-active"></div>
+			</div>
+		</div>
+    </div>
+    <ul class="mui-table-view mui-grid-view mui-grid-9">
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" ng-click="itemClick('1')"><a href="#">
+            <span class="mui-icon iconfont icon-tixing"><span class="mui-badge">{{workRemindCount}}</span></span>
+            <div class="mui-media-body">工作提醒</div>
+        </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" ng-click="itemClick('2')"><a href="#">
+            <span class="mui-icon iconfont icon-shixiang"><span class="mui-badge">{{todoCount}}</span></span>
+            <div class="mui-media-body">待办事项</div>
+        </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" ng-click="itemClick('3')"><a href="#">
+            <span class="mui-icon  iconfont icon-yiban"></span>
+            <div class="mui-media-body">已办事项</div>
+        </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" ng-click="itemClick('4')"><a href="#">
+            <span class="mui-icon  iconfont icon-tongzhi"></span>
+            <div class="mui-media-body">通知公告</div>
+        </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" ng-click="itemClick('5')"><a href="#">
+            <span class="mui-icon  iconfont icon-tongxunlu"></span>
+            <div class="mui-media-body">公共通讯录</div>
+        </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" ng-click="itemClick('6')"><a href="#">
+            <span class="mui-icon iconfont icon-phonebook"></span>
+            <div class="mui-media-body">个人通讯录</div>
+        </a>
+        </li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" ng-click="itemClick('7')"><a href="#">
+            <span class="mui-icon iconfont icon-gongzi"></span>
+            <div class="mui-media-body">个人工资</div>
+        </a>
+        </li>
+    </ul>
+</div>
+<script type="text/javascript">
+    angular.module('app', ["ngCookies"])
+            .controller('indexCtrl', function ($scope, $http, $cookieStore) {
+                // 工作提醒个数，待办事项个数清空
+                $scope.workRemindCount = "0";
+                $scope.todoCount = "0";
+                // 取得UserID
+                var userID = $cookieStore.get("ChangZhouOAUserID");
+
+                // 取得工作提醒个数，待办事项个数
+                // 参数编辑
+                var para = [{key: "userId", value: userID}];
+                $http.get("/oa/test_json/getWorkRemindToDoCount.json")
+                        .success(function (response) {
+                            if (response.status == 0000) {
+                                console.log(response.msg)
+                                // 设定工作提醒个数,待办事项个数
+                                $scope.workRemindCount = response.workRemindCount;
+                                $scope.todoCount = response.todoCount;
+                            } else if (response.status == 0001) {
+                                console.log(response.msg)
+                            }
+                        })
+
+                // 菜单项目点击
+                $scope.itemClick = function (flag) {
+                    switch (flag) {
+                        case '1':
+                            // 工作提醒
+                             window.location = 'libs/jobRemind.html';
+                            break;
+                        case '2':
+                            // 待办事项
+                             window.location = 'libs/todoList.html';
+                            break;
+                        case '3':
+                            // 已办事项
+                             window.location = 'libs/hasDone.html';
+                            break;
+                        case '4':
+                            // 通知公告
+                             window.location = 'libs/announcement.html';
+                            break;
+                        case '5':
+                            // 公共通讯录
+                             window.location = 'libs/commonContact.html';
+                            break;
+                        case '6':
+                            // 个人通讯录
+                             window.location = 'libs/PersonalContact.html';
+                            break;
+                        case '7':
+                            // 个人工资
+                             window.location = 'libs/index.html';
+                            break;
+                    }
+                }
+            })
+            
+            //轮播图初始化
+        	mui.init({
+				swipeBack:true //启用右滑关闭功能
+			});
+			var slider = mui("#slider");
+			document.getElementById("switch").addEventListener('toggle', function(e) {
+				if (e.detail.isActive) {
+					slider.slider({
+						interval: 5000
+					});
+				} else {
+					slider.slider({
+						interval: 0
+					});
+				}
+			});
+</script>
+</body>
+</html>

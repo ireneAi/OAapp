@@ -1,0 +1,14 @@
+/*登录*/
+.login {margin: 5rem 8% 0}
+.login h5{font-size: 1.25rem;margin-bottom: .5rem;}
+.login .mui-btn-block {padding:6px 0}
+.login .logo {width:70%;margin: 1rem auto 2rem;display: block;}
+.error {font-size: 1rem;color:#FF0000;text-align: center;}
+
+/*首页*/
+
+/*工作提醒 待办事项 例表*/
+.worktext {padding: 6px 0; font-weight: bold;    line-height: 1.42;}
+.job .mui-button-row{ padding:6px 3%}
+.job .mui-btn-block {padding:6px 0}
+/*已办事项*/
