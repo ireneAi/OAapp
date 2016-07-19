@@ -23,36 +23,107 @@
 	</header>
     <div class="mui-content">
 		<ul class="mui-table-view">
-			 <li class="mui-table-view-cell">
-			 	<h4>请在放学后收拾好屋子请在放学后收拾好屋子请在放学后收拾好屋子。</h4>
+			 <li class="mui-table-view-cell" ng-repeat="item in workRemindList">
+			 	<h4>{{item.workRemindContent}}</h4>
 			 	<div class="mui-content">
-			 		<p class="worktext" style="float: left;">2016/06/06 21:00:00</p>		 
-		 			<div class="mui-btn mui-btn-primary" style="float: right;">
+			 		<p class="worktext" style="float: left;">{{item.sendTime}}</p>
+		 			<div class="mui-btn mui-btn-primary" style="float: right;" ng-click="read(item.workRemindId)">
 						已读
 					</div>			 		
 			 	</div>				
 			 </li>
-			 <li class="mui-table-view-cell">
-			 	<h4>请在放学后收拾好屋子。</h4>
-			 	<div class="mui-content">
-			 		<p class="worktext" style="float: left;">2016/06/06 21:00:00</p>		 
-		 			<div class="mui-btn mui-btn-primary" style="float: right;">
-						已读
-					</div>			 		
-			 	</div>				
-			 </li>
-		</ul>
+		</ul> 
 		
-        <div class="mui-button-row">
-            <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined">加载更多</button>
+        <div class="mui-button-row" ng-show="isHaveMore">
+            <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined" ng-click="getMore()">加载更多</button>
         </div>
 	</div>
 </div>
 <script type="text/javascript">
+	// 主控制
     angular.module('app', ["ngCookies"])
             .controller('indexCtrl', function ($scope, $http, $cookieStore) {
-               
+                // 取得UserID
+                var userId = $cookieStore.get("ChangZhouOAUserID");
+                // 取得件数
+                var getCount = 20;
+
+                // 工作提醒一览取得
+                getWorkRemindList($scope, $http, userId, 1, getCount)
+
+                // 取得更多点击事件
+                $scope.getMore = function () {
+                    // 取得件数改为99999999（取得全数据）
+                    getCount = 99999999;
+                    // 工作提醒一览取得
+                    getWorkRemindList($scope, $http, userId, 1, getCount)
+                }
+
+                // 提醒已读按钮点击事件
+                $scope.read = function (workRemindId) {
+                    // 已读工作提醒
+                    readWorkRemind($scope, $http, userId, workRemindId)
+                }
             })
+
+	/**
+	 * 工作提醒一览取得
+	 * @param $scope
+	 * @param $http
+	 * @param userId 用户ID
+	 * @param getStartRowNo 取得开始条数
+     * @param getCount 取得件数
+     */
+	function getWorkRemindList($scope, $http, userId, getStartRowNo, getCount) {
+		// 参数编辑
+		var para = [{key: "userId", value: userId},
+			        {key: "getStartRowNo", value: getStartRowNo},
+			        {key: "getCount", value: getCount}];
+		$http.get("/oa/test_json/getWorkRemindList.json")
+				.success(function (response) {
+					if (response.status == 0000) {
+						console.log(response.msg);
+                        $scope.workRemindList = response.data;
+                        $scope.isHaveMore =  response.isHaveMore;
+                    } else if (response.status != 0000) {
+						console.log(response.msg);
+                        alert(response.msg);
+					}
+				})
+	};
+
+    /**
+     * 已读工作提醒
+     * @param $scope
+     * @param $http
+     * @param userId 用户ID
+     * @param workRemindId 工作提醒ID
+     */
+    function readWorkRemind($scope, $http, userId, workRemindId) {
+        // 参数编辑
+        var para = [{key: "userId", value: userId},
+            {key: "workRemindId", value: workRemindId}];
+        $http.get("/oa/test_json/readWorkRemind.json")
+                .success(function (response) {
+                    if (response.status == 0000) {
+                        console.log(response.msg);
+                        // 删除列表中的对应项目
+                        var deletePos = -1;
+                        for (var i = 0; i < $scope.workRemindList.length; i++) {
+                            if ($scope.workRemindList[i].workRemindId == workRemindId) {
+                                deletePos = i;
+                                break;
+                            }
+                        }
+                        if (deletePos != -1) {
+                            $scope.workRemindList.splice(deletePos, 1);
+                        }
+                    } else if (response.status != 0000) {
+                        console.log(response.msg);
+                        alert(response.msg);
+                    }
+                })
+    }
 </script>
 </body>
 </html>

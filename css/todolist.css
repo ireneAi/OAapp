@@ -150,3 +150,8 @@ select{float: left;    width: 50%;  margin: 0;  padding: 2px 10px;font-size: 18p
 .mui-content {padding-bottom: 50px;}
 .mui-button-row {padding: 0 2%;}
 .mui-btn-block {padding:5px 0;margin: 10px 0;}
+
+.wages table {width:100%;margin:10px auto}
+.wages td {border: 1px solid #ccc;height: 32px;line-height: 32px;padding-left:5px;}
+.wages td:first-child{background: #efefef;width:60%}
+.wages td:last-child{text-align: right;padding-right: 10px;}

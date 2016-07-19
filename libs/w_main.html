@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
-    <title>常州OA-工资</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>常州OA-待办事项</title>
     <script src="../js/mui.min.js"></script>
     <script src="../js/angular-1.0.1.js"></script>
     <script src="../js/angular-cookies.js"></script>
@@ -11,31 +13,57 @@
     <link href="../css/mui.css" rel="stylesheet"/>
     <link href="../css/iconfont.css" rel="stylesheet"/>
     <link href="../css/main.css" rel="stylesheet"/>
+    <link href="../css/todolist.css" rel="stylesheet"/>    
     <script type="text/javascript" charset="utf-8">
         mui.init();
     </script>
 </head>
-<body>
-<div class="mui-content job" ng-app="app" ng-controller="indexCtrl">
+<body ng-app="app" ng-controller="indexCtrl" class="wages">	
 	<header class="mui-bar mui-bar-nav">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">个人工资</h1>
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">查看工资表</h1>
 	</header>
-    <div class="mui-content">
-		<ul class="mui-table-view">
-			 <li class="mui-table-view-cell">
-			 	<h4 ng-bind="wages.yearMonth"></h4>
-			 	<div class="mui-content">
-			 		<h5 class="worktext" style="float: left;">工资合计：{{wages.salaryTotal}}</h5>			 		
-		 			<div class="mui-btn mui-btn-primary" style="float: right;" ng-click="read(wages.serialNo)">
-						查看
-					</div>			 		
-			 	</div>				
-			 </li>
-		</ul> 		
-        <div class="mui-button-row">
-            <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined" ng-click="getMore()">加载更多</button>
-        </div>
+	<div class="mui-content">
+		<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+			<li class="mui-table-view-cell">
+				<h4 style="float: left;">序号：</h4>	
+				<p class="f18 mar5" ng-bind="result.serialNo"></p>
+			</li>		
+			<li class="mui-table-view-cell">
+				<h4 style="float: left;">月份：</h4>	
+				<p class="f18 mar5" ng-bind="result.yearMonth"></p>
+			</li>		
+			<li class="mui-table-view-cell">
+				<h4 style="float: left;">姓名：</h4>	
+				<p class="f18 mar5" ng-bind="result.name"></p>
+			</li>		
+			<li class="mui-table-view-cell">
+				<h4 style="float: left;">工资奖金合计：</h4>	
+				<p class="f18 mar5" ng-bind="result.salaryTotal"></p>
+			</li>	
+			<li class="mui-table-view-cell">
+				<h4>工资明细:</h4>								
+				<table>
+					<tr ng-repeat="item in result.salaryInfos">
+						<td ng-bind="item.salaryColumnName"></td>
+						<td ng-bind="item.salaryColumnValue"></td>
+					</tr>
+				</table>
+			</li>
+			<li class="mui-table-view-cell">
+				<h4>奖金明细：</h4>								
+				<table>
+					<tr ng-repeat="item in result.bonusInfos">
+						<td ng-bind="item.bonusColumnName"></td>
+						<td ng-bind="item.bonusColumnValue"></td>
+					</tr>
+				</table>
+			</li>
+					
+		</ul>
+	</div>		
+	<div class="mui-bar mui-bar-tab">
+		<button type="button" class="mui-btn mui-btn-block mui-btn-danger mui-action-back" onclick="return false;">返回</button>
 	</div>
 </div>
 <script type="text/javascript">
@@ -54,18 +82,13 @@
                 $scope.getMore = function () {
                     // 取得件数改为99999999（取得全数据）
                     getCount = 99999999;
-                    // 工作提醒一览取得
+                    // 工资一览取得
                     getSalaryInfo($scope, $http, userId, 1, getCount)
-                }
-
-                 // 查看按钮点击事件
-                $scope.read = function (serialNo) {
-                    window.location = 'w_main.html#' + serialNo;
-                }
+                }               
             })
 
 	/**
-	 * 工作提醒一览取得
+	 * 工资一览取得
 	 * @param $scope
 	 * @param $http
 	 * @param userId 用户ID
@@ -81,15 +104,14 @@
 				.success(function (response) {
 					if (response.status == 0000) {
 						console.log(response.msg);
-						//获取所有工资例表数据
-						$scope.wages = response;
+						//取得所有工资数据
+						$scope.result = response
                     } else if (response.status != 0000) {
 						console.log(response.msg);
                         alert(response.msg);
 					}
 				})
 	};
-
 </script>
 </body>
 </html>

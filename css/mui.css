@@ -2910,11 +2910,11 @@ select:focus
 {
     font-family: 'Helvetica Neue', Helvetica, sans-serif;
     line-height: 1.1;
-
-    float: right;
-
-    width: 15%;
-    padding: 10px 15px;
+    width: 60%;
+    padding: 10px 0;
+    margin: 0;
+    border: 0;
+    text-align: left;
 }
 
 .mui-input-row .mui-btn ~ input, .mui-input-row .mui-btn ~ select, .mui-input-row .mui-btn ~ textarea

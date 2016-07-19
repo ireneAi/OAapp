@@ -83,28 +83,23 @@
     </ul>
 </div>
 <script type="text/javascript">
+    // 主控制
     angular.module('app', ["ngCookies"])
             .controller('indexCtrl', function ($scope, $http, $cookieStore) {
                 // 工作提醒个数，待办事项个数清空
                 $scope.workRemindCount = "0";
                 $scope.todoCount = "0";
                 // 取得UserID
-                var userID = $cookieStore.get("ChangZhouOAUserID");
+                var userId = $cookieStore.get("ChangZhouOAUserID");
 
-                // 取得工作提醒个数，待办事项个数
-                // 参数编辑
-                var para = [{key: "userId", value: userID}];
-                $http.get("/oa/test_json/getWorkRemindToDoCount.json")
-                        .success(function (response) {
-                            if (response.status == 0000) {
-                                console.log(response.msg)
-                                // 设定工作提醒个数,待办事项个数
-                                $scope.workRemindCount = response.workRemindCount;
-                                $scope.todoCount = response.todoCount;
-                            } else if (response.status == 0001) {
-                                console.log(response.msg)
-                            }
-                        })
+                // 添加定时刷新
+                setInterval(function() {
+                    // 取得提醒和待办事项个数
+                    $scope.$apply(getWorkRemindToDoCount($scope, $http, userId));
+                }, 3000);
+
+                // 取得提醒和待办事项个数
+                getWorkRemindToDoCount($scope, $http, userId);
 
                 // 菜单项目点击
                 $scope.itemClick = function (flag) {
@@ -135,7 +130,7 @@
                             break;
                         case '7':
                             // 个人工资
-                             window.location = 'libs/index.html';
+                             window.location = 'libs/wages.html';
                             break;
                     }
                 }
@@ -146,17 +141,30 @@
 				swipeBack:true //启用右滑关闭功能
 			});
 			var slider = mui("#slider");
-			document.getElementById("switch").addEventListener('toggle', function(e) {
-				if (e.detail.isActive) {
-					slider.slider({
-						interval: 5000
-					});
-				} else {
-					slider.slider({
-						interval: 0
-					});
-				}
-			});
+			
+
+    /**
+     * 取得提醒和待办事项
+     * @param $scope
+     * @param $http
+     * @param userID 用户id
+     */
+    function getWorkRemindToDoCount($scope, $http, userId) {
+        // 取得工作提醒个数，待办事项个数
+        // 参数编辑
+        var para = [{key: "userId", value: userId}];
+        $http.get("/oa/test_json/getWorkRemindToDoCount.json")
+                .success(function (response) {
+                    if (response.status == 0000) {
+                        console.log(response.msg);
+                        // 设定工作提醒个数,待办事项个数
+                        $scope.workRemindCount = response.workRemindCount;
+                        $scope.todoCount = response.todoCount;
+                    } else if (response.status != 0000) {
+                        console.log(response.msg);
+                    }
+                })
+    };
 </script>
 </body>
 </html>
