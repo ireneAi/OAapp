@@ -1,0 +1,6 @@
+{"status":"0000","msg":"成功，系统处理正常",
+"data":[
+{"noticeId":"111","noticeTitle":"我是公告","sendTime":"2016-07-20 8:00:00"},
+{"noticeId":"2","noticeTitle":"今天下午3点开会","sendTime":"2016-07-20 9:05:55"},
+{"noticeId":"3","noticeTitle":"暴雨蓝色预警","sendTime":"2016-07-21 9:10:20"}
+]}

@@ -1,0 +1,8 @@
+{"status":"0000","msg":"成功，系统处理正常",
+"noticeId":"通知公告ID",
+"noticeTitle":"我是一条公告",
+"noticeContent":"公告内容",
+"sendTime":"2016-07-20 19:00:50",
+"sendUserName":"王XX",
+"attachedFiles":"1.png,公告附件.doc"
+}

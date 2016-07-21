@@ -32,24 +32,21 @@
 					<form class="mui-input-group">				
 						<div class="mui-input-row">
 							<label>事项类型</label>
-							<select>
-								<option value="item-1">全部</option>
-								<option value="item-2">通知下发</option>
-								<option value="item-3">信访办事</option>
-								<option value="item-4">督察督办</option>
+							<select ng-model="todoType">
+								<option ng-repeat="item in todoTypeList" value="{{item.toDoTypeCode}}">{{item.toDoTypeName}}</option>
 							</select>
 						</div>
 						<div class="mui-input-row">
 							<label>内容</label>
-							<input type="text" class="mui-input-clear" placeholder="内容">
+							<input type="text" class="mui-input-clear" placeholder="内容" ng-model="todoContent">
 						</div>	
 						<div class="mui-input-row">
 							<label>日期</label>
 							<button id='data1' data-options='{"type":"date","beginYear":2014,"endYear":2016}' class="btn mui-btn mui-btn-block">选择日期...</button>
-							<input type="text" class="mui-input-clear" placeholder="单位名称">
+							<input id="dataInput" type="text" class="mui-input-clear" placeholder="日期">
 						</div>
 						<div class="mui-button-row" style="margin:10px 15px 0;">
-							<button type="button" class="mui-btn mui-btn-primary" onclick="return false;">搜索</button>
+							<button type="button" class="mui-btn mui-btn-primary" ng-click="search()">搜索</button>
 						</div>					
 					</form>		
 				</div>
@@ -57,28 +54,135 @@
 		</div>	
 		<div id="todolist">		
 			<ul class="mui-table-view">
-				<li class="mui-table-view-cell mui-media">
-					<a class="mui-navigate-right" href="h_main.html">
+				<li class="mui-table-view-cell mui-media" ng-repeat="item in todoList">
+					<a class="mui-navigate-right" ng-click="deal(item.toDoId)">
 						<div class="mui-media-body">
-							办公物品采购申请
-							<p class="mui-ellipsis f16 mui-col-xs-10">采购了某某某</p>
-							<p class="mui-ellipsis">2016/06/06 21:00:00</p>
+							{{item.toDoTypeName}}
+							<p class="mui-ellipsis f16 mui-col-xs-10">{{item.toDoContent}}</p>
+							<p class="mui-ellipsis">{{item.revicedTime}}</p>
 						</div>
 					</a>
 				</li>			 
 			</ul>		
-	        <div class="mui-button-row">
-	            <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined">加载更多</button>
+	        <div class="mui-button-row" ng-show="isHaveMore">
+	            <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined" ng-click="getMore()">加载更多</button>
 	        </div>
 		</div>
 	</div>
 	<script src="../js/mui.picker.min.js"></script>
 <script type="text/javascript">
+	// 主控制
+	angular.module('app', ["ngCookies"])
+			.controller('indexCtrl', function ($scope, $http, $cookieStore) {
+				// 取得UserID
+				var userId = $cookieStore.get("ChangZhouOAUserID");
+				// 取得件数
+				var getCount = 20;
+
+                //$scope.sendTime = "选择日期...";
+
+				// 取得事项类型
+				getToDoTypeList($scope, $http, userId);
+
+				// 取得已办事项一览
+				getToDoList($scope, $http, userId, 1, getCount, "", "", "");
+
+				// 取得更多点击事件
+				$scope.getMore = function () {
+					// 取得件数改为99999999（取得全数据）
+					getCount = 99999999;
+					// 已办事项一览取得
+					getToDoList($scope, $http, userId, 1, getCount, $scope.todoType, $scope.todoContent, document.getElementById("dataInput").val);
+				}
+
+				// 检索按钮点击事件
+				$scope.search = function () {
+					// 取得件数改为99999999（取得全数据）
+					getCount = 20;
+					// 已办事项一览取得
+					getToDoList($scope, $http, userId, 1, getCount, $scope.todoType, $scope.todoContent, document.getElementById("dataInput").val);
+				}
+
+				// 查看已办事项
+				$scope.deal = function (toDoId) {
+					// 跳转至代办事项详细页 通过location传递代办事项ID
+					window.location = 'h_main.html#' + toDoId;
+				}
+			})
+
+	/**
+	 * 取得事项类型
+	 * @param $scope
+	 * @param $http
+	 * @param userId 用户ID
+	 */
+	function getToDoTypeList($scope, $http, userId) {
+		// 参数编辑
+		var para = [{key: "userId", value: userId}];
+		$http.get("/oa/test_json/getToDoTypeList.json")
+				.success(function (response) {
+					if (response.status == 0000) {
+						console.log(response.msg);
+						$scope.todoTypeList = response.data;
+					} else if (response.status != 0000) {
+						console.log(response.msg);
+						alert(response.msg);
+					}
+				})
+	}
+
+	/**
+	 * 取得已办事项一览
+	 * @param $scope
+	 * @param $http
+	 * @param userId 用户ID
+	 * @param getStartRowNo 取得开始条数
+	 * @param getCount 取得件数
+	 * @param toDoTypeCode 事项类型
+	 * @param content 内容
+	 * @param sendTime 发布时间
+	 */
+	function getToDoList($scope, $http, userId, getStartRowNo, getCount, toDoTypeCode, content, sendTime) {
+		// 参数编辑
+		var para = [{key: "userId", value: userId},
+			{key: "getStartRowNo", value: getStartRowNo},
+			{key: "getCount", value: getCount},
+			{key: "getType", value: 1}];
+
+		// 事项类型检索条件
+		if (toDoTypeCode && toDoTypeCode != "") {
+			para.push({key: "toDoTypeCode", value: toDoTypeCode});
+		}
+		// 内容
+		if (content && content != "") {
+			para.push({key: "content", value: content});
+		}
+		// 发布时间
+		if (sendTime && sendTime != "") {
+			para.push({key: "sendTime", value: sendTime});
+		}
+		$http.get("/oa/test_json/getToDoList.json")
+				.success(function (response) {
+					if (response.status == 0000) {
+						console.log(response.msg);
+						$scope.todoList = response.data;
+						$scope.isHaveMore =  response.isHaveMore;
+					} else if (response.status != 0000) {
+						console.log(response.msg);
+						alert(response.msg);
+					}
+				})
+	}
+
 	//日期
 	(function($) {
 				$.init();
 				var btns = $('#data1');
+                var fromDate = (new Date()).getFullYear() - 1;
+                var endDate = (new Date()).getFullYear() + 1;
+                var data_options = '{"type":"date","beginYear":' + fromDate.toString() + ',"endYear":' + endDate.toString() + '}';
 				btns.each(function(i, btn) {
+                    btn.setAttribute('data-options', data_options);
 					btn.addEventListener('tap', function() {
 						var optionsJson = this.getAttribute('data-options') || '{}';
 						var options = JSON.parse(optionsJson);
@@ -99,7 +203,9 @@
 							 * rs.h 时，用法同年
 							 * rs.i 分（minutes 的第二个字母），用法同年
 							 */
-							console.log('选择结果: ' + rs.text)
+                            document.getElementById("dataInput").val = rs.y.text + '/' + rs.m.text + '/' + rs.d.text;
+                            btn.innerHTML = rs.y.text + '/' + rs.m.text + '/' + rs.d.text;
+							console.log('选择结果: ' + rs.text);
 							/* 
 							 * 返回 false 可以阻止选择框的关闭
 							 * return false;

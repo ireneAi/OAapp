@@ -27,39 +27,117 @@
 		<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
 			<li class="mui-table-view-cell">
 				<h4 style="float: left;">事项类型：</h4>	
-				<p class="f18 mar5">请假申请</p>
+				<p class="f18 mar5">{{toDoTypeName}}</p>
 			</li>		
 			<li class="mui-table-view-cell">
 				<h4>事项内容：</h4>	
-				<p class="f18 mar5">小王 2016/07/01 ~ 2016/07/03 请假小王 2016/07/01 ~ 2016/07/03 请假</p>
+				<p class="f18 mar5">{{toDoContent}}</p>
 			</li>		
 			<li class="mui-table-view-cell">
 				<h4 style="float: left;">接收日期：</h4>	
-				<p class="f18 mar5">2016/06/08</p>
+				<p class="f18 mar5">{{revicedTime}}</p>
 			</li>		
 			<li class="mui-table-view-cell">
 				<h4>工作环节：</h4>	
-				<p class="f18 mar5">年级组长：同意 可以<br/>副校长：同意 可以</p>
+				<p class="f18 mar5">{{workLinks}}</p>
 			</li>	
 			<li class="mui-table-view-cell">
-				<h4 style="float: left;">办理状态:</h4>								
-				<select>
-					<option value="item-1">同意</option>
-					<option value="item-2">不同意</option>
+				<h4 style="float: left;">办理状态：</h4>
+				<select ng-model="dealType">
+					<option ng-repeat="item in dealTypes" value="{{item.dealTypeCode}}">{{item.dealTypeName}}</option>
 				</select>
 			</li>
 			<li class="mui-table-view-cell">
 				<h4>批示意见：</h4>	
-				<textarea id="textarea" rows="5" placeholder="多行文本框"></textarea>
+				<textarea id="textarea" rows="5" placeholder="多行文本框" ng-model="comments"></textarea>
 			</li>			
 		</ul>
 	</div>		
 	<div class="mui-bar mui-bar-tab">
-		<button type="button" class="mui-btn mui-btn-block mui-btn-primary" onclick="return false;">处理</button>
+		<button type="button" class="mui-btn mui-btn-block mui-btn-primary" ng-click="deal()">处理</button>
 	</div>
 </div>
 <script type="text/javascript">
+	// 主控制
+	angular.module('app', ["ngCookies"])
+			.controller('indexCtrl', function ($scope, $http, $cookieStore) {
+				// 取得UserID
+				var userId = $cookieStore.get("ChangZhouOAUserID");
+				// 取得代办事项ID
+				var toDoId = location.hash.replace('#','');
 
+                // 代办事项详细取得
+                getToDoInfo($scope, $http, userId, toDoId);
+                // 批示意见设置为空
+                $scope.comments = "";
+
+                // 处理代办事项
+                $scope.deal = function () {
+                    // 判断办理状态
+                    if (!$scope.dealType) {
+                        alert("请选择办理状态。");
+                        return;
+                    }
+                    dealWorkRemind($scope, $http, userId, toDoId, $scope.dealType, $scope.comments);
+                }
+			})
+
+	/**
+	 * 待办事项详细取得
+	 * @param $scope
+	 * @param $http
+	 * @param userId 用户ID
+     * @param toDoId 代办事项ID
+     */
+	function getToDoInfo($scope, $http, userId, toDoId) {
+		// 参数编辑
+		var para = [{key: "userId", value: userId},
+			{key: "toDoId", value: toDoId}];
+		$http.get("/oa/test_json/getToDoInfo.json")
+				.success(function (response) {
+					if (response.status == 0000) {
+						console.log(response.msg);
+                        $scope.toDoId = response.toDoId;
+						$scope.toDoTypeName = response.toDoTypeName;
+                        $scope.toDoContent = response.toDoContent;
+                        $scope.revicedTime = response.revicedTime;
+                        $scope.workLinks = response.workLinks;
+                        $scope.dealTypes = response.dealTypes;
+					} else if (response.status != 0000) {
+						console.log(response.msg);
+						alert(response.msg);
+					}
+				})
+	}
+
+    /**
+     * 处理待办事项
+     * @param $scope
+     * @param $http
+     * @param userId 用户ID
+     * @param toDoId 代办事项ID
+     * @param dealTypeCode 办理状态Code
+     * @param comments 批示意见
+     */
+    function dealWorkRemind($scope, $http, userId, toDoId,dealTypeCode, comments) {
+        // 参数编辑
+        var para = [{key: "userId", value: userId},
+            {key: "toDoId", value: toDoId},
+            {key: "dealTypeCode", value: dealTypeCode},
+            {key: "comments", value: comments}];
+        $http.get("/oa/test_json/dealWorkRemind.json")
+                .success(function (response) {
+                    if (response.status == 0000) {
+                        console.log(response.msg);
+                        alert(response.msg);
+                        window.location = 'todoList.html';
+                    } else if (response.status != 0000) {
+                        console.log(response.msg);
+                        alert(response.msg);
+                    }
+                })
+
+    }
 </script>
 </body>
 </html>

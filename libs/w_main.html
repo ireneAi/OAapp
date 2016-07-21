@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
     <meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>常州OA-待办事项</title>
+    <title>常州OA-详细工资表</title>
     <script src="../js/mui.min.js"></script>
     <script src="../js/angular-1.0.1.js"></script>
     <script src="../js/angular-cookies.js"></script>
@@ -71,20 +71,12 @@
     angular.module('app', ["ngCookies"])
             .controller('indexCtrl', function ($scope, $http, $cookieStore) {
                 // 取得UserID
-                var userId = $cookieStore.get("ChangZhouOAUserID");
-                // 取得件数
-                var getCount = 20;
-
+                var userId = $cookieStore.get("ChangZhouOAUserID");  
+                // 取得salaryId	 通过Localtion获取工资ID
+                var salaryId = location.hash;                
+				console.log(salaryId.replace('#',''))
                 // 工资表一览取得
-                getSalaryInfo($scope, $http, userId, 1, getCount)
-
-                // 取得更多点击事件
-                $scope.getMore = function () {
-                    // 取得件数改为99999999（取得全数据）
-                    getCount = 99999999;
-                    // 工资一览取得
-                    getSalaryInfo($scope, $http, userId, 1, getCount)
-                }               
+                getSalaryInfo($scope, $http, userId,salaryId)                              
             })
 
 	/**
@@ -95,11 +87,10 @@
 	 * @param getStartRowNo 取得开始条数
      * @param getCount 取得件数
      */
-	function getSalaryInfo($scope, $http, userId, getStartRowNo, getCount) {
+	function getSalaryInfo($scope, $http, userId, salaryId) {
 		// 参数编辑
 		var para = [{key: "userId", value: userId},
-			        {key: "getStartRowNo", value: getStartRowNo},
-			        {key: "getCount", value: getCount}];
+			        {key: "salaryId", value: salaryId}];
 		$http.get("/oa/test_json/getSalaryInfo.json")
 				.success(function (response) {
 					if (response.status == 0000) {

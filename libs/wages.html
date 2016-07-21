@@ -23,17 +23,17 @@
 	</header>
     <div class="mui-content">
 		<ul class="mui-table-view">
-			 <li class="mui-table-view-cell">
-			 	<h4 ng-bind="wages.yearMonth"></h4>
+			 <li class="mui-table-view-cell" ng-repeat="item in wages">
+			 	<h4 ng-bind="item.yearMonth"></h4>
 			 	<div class="mui-content">
-			 		<h5 class="worktext" style="float: left;">工资合计：{{wages.salaryTotal}}</h5>			 		
-		 			<div class="mui-btn mui-btn-primary" style="float: right;" ng-click="read(wages.serialNo)">
+			 		<h5 class="worktext" style="float: left;">工资合计：{{item.salaryTotal}}</h5>			 		
+		 			<div class="mui-btn mui-btn-primary" style="float: right;" ng-click="read(item.salaryId)">
 						查看
 					</div>			 		
 			 	</div>				
 			 </li>
 		</ul> 		
-        <div class="mui-button-row">
+        <div class="mui-button-row" ng-hide="wages.length >= 21">
             <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined" ng-click="getMore()">加载更多</button>
         </div>
 	</div>
@@ -58,14 +58,15 @@
                     getSalaryInfo($scope, $http, userId, 1, getCount)
                 }
 
-                 // 查看按钮点击事件
-                $scope.read = function (serialNo) {
-                    window.location = 'w_main.html#' + serialNo;
+                 // 查看按钮点击事件 
+                $scope.read = function (salaryId) {
+                	//跳转至工资详细页 通过location传递salaryId
+                    window.location = 'w_main.html#' + salaryId;
                 }
             })
 
 	/**
-	 * 工作提醒一览取得
+	 * 个人工资一览取得
 	 * @param $scope
 	 * @param $http
 	 * @param userId 用户ID
@@ -77,12 +78,12 @@
 		var para = [{key: "userId", value: userId},
 			        {key: "getStartRowNo", value: getStartRowNo},
 			        {key: "getCount", value: getCount}];
-		$http.get("/oa/test_json/getSalaryInfo.json")
+		$http.get("/oa/test_json/getSalaryList.json")
 				.success(function (response) {
 					if (response.status == 0000) {
 						console.log(response.msg);
 						//获取所有工资例表数据
-						$scope.wages = response;
+						$scope.wages = response.data;
                     } else if (response.status != 0000) {
 						console.log(response.msg);
                         alert(response.msg);

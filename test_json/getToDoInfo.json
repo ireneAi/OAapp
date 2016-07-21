@@ -1,0 +1,10 @@
+{"status":"0000",
+  "msg":"成功",
+  "toDoId":"001",
+  "toDoTypeName":"待办事项类型",
+  "toDoContent":"待办事项内容",
+  "revicedTime":"接收日期",
+  "workLinks":"工作环节",
+  "dealTypes":[
+    {"dealTypeCode":"01","dealTypeName":"同意"},
+    {"dealTypeCode":"02","dealTypeName":"驳回"}]}

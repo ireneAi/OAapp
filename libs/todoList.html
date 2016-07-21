@@ -41,18 +41,18 @@
 			<div class="mui-scroll-wrapper">
 				<div class="mui-scroll">
 					<ul class="mui-table-view">
-						<li class="mui-table-view-cell mui-media">
-							<a class="mui-navigate-right" href="t_main.html">
+						<li class="mui-table-view-cell mui-media" ng-repeat="item in todoList">
+							<a class="mui-navigate-right" ng-click="deal(item.toDoId)">
 								<div class="mui-media-body">
-									办公物品采购申请
-									<p class="mui-ellipsis f16 mui-col-xs-10">采购了某某某</p>
-									<p class="mui-ellipsis">2016/06/06 21:00:00</p>
+                                     {{item.toDoTypeName}}
+									<p class="mui-ellipsis f16 mui-col-xs-10">{{item.toDoContent}}</p>
+									<p class="mui-ellipsis">{{item.revicedTime}}</p>
 								</div>
 							</a>
 						</li>			 
 					</ul>		
-			        <div class="mui-button-row">
-			            <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined">加载更多</button>
+			        <div class="mui-button-row" ng-show="isHaveMore">
+			            <button type="submit" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined" ng-click="getMore()">加载更多</button>
 			        </div>
 			    </div>
 			</div>
@@ -68,11 +68,59 @@
 	
 	//初始化单页的区域滚动
 	mui('.mui-scroll-wrapper').scroll();
-		
+
+    // 主控制
     angular.module('app', ["ngCookies"])
             .controller('indexCtrl', function ($scope, $http, $cookieStore) {
-               
+				// 取得UserID
+				var userId = $cookieStore.get("ChangZhouOAUserID");
+				// 取得件数
+				var getCount = 20;
+
+                // 代办事项一览取得
+                getToDoList($scope, $http, userId, 1, getCount);
+
+                // 取得更多点击事件
+                $scope.getMore = function () {
+                    // 取得件数改为99999999（取得全数据）
+                    getCount = 99999999;
+                    // 代办事项一览取得
+                    getToDoList($scope, $http, userId, 1, getCount);
+                }
+
+                // 处理代办事项
+                $scope.deal = function (toDoId) {
+                    // 跳转至代办事项详细页 通过location传递代办事项ID
+                    window.location = 't_main.html#' + toDoId;
+                }
             })
+
+	/**
+	 * 取得代办事项一览
+	 * @param $scope
+	 * @param $http
+	 * @param userId 用户ID
+	 * @param getStartRowNo 取得开始条数
+	 * @param getCount 取得件数
+     */
+	function getToDoList($scope, $http, userId, getStartRowNo, getCount) {
+		// 参数编辑
+		var para = [{key: "userId", value: userId},
+			{key: "getStartRowNo", value: getStartRowNo},
+			{key: "getCount", value: getCount},
+			{key: "getType", value: 0}];
+		$http.get("/oa/test_json/getToDoList.json")
+				.success(function (response) {
+					if (response.status == 0000) {
+						console.log(response.msg);
+						$scope.todoList = response.data;
+						$scope.isHaveMore =  response.isHaveMore;
+					} else if (response.status != 0000) {
+						console.log(response.msg);
+						alert(response.msg);
+					}
+				})
+	}
 </script>
 </body>
 </html>

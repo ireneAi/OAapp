@@ -1,0 +1,10 @@
+{"status":"0000",
+  "msg":"成功，系统处理正常",
+  "data":[
+    {"toDoTypeCode":"01","toDoTypeName":"事项类型01"},
+    {"toDoTypeCode":"02","toDoTypeName":"事项类型02"},
+    {"toDoTypeCode":"03","toDoTypeName":"事项类型03"},
+    {"toDoTypeCode":"04","toDoTypeName":"事项类型04"},
+    {"toDoTypeCode":"05","toDoTypeName":"事项类型05"},
+    {"toDoTypeCode":"06","toDoTypeName":"事项类型06"},
+    {"toDoTypeCode":"07","toDoTypeName":"事项类型07"}]}

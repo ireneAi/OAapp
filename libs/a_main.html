@@ -27,23 +27,23 @@
 		<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
 			<li class="mui-table-view-cell">
 				<h4 style="float: left;">公告标题：</h4>	
-				<p class="f18 mar5" style="padding-left: 89px;">关于XXXXX的公告</p>
+				<p class="f18 mar5" style="padding-left: 89px;" ng-bind="notice.noticeTitle"></p>
 			</li>		
 			<li class="mui-table-view-cell">
 				<h4>内容：</h4>	
-				<p class="f18 mar5">公告内容我是公告内容</p>
+				<p class="f18 mar5" ng-bind="notice.noticeContent"></p>
 			</li>		
 			<li class="mui-table-view-cell">
 				<h4 style="float: left;">发布时间：</h4>	
-				<p class="f18 mar5">2016/06/08</p>
+				<p class="f18 mar5" ng-bind="notice.sendTime"></p>
 			</li>		
 			<li class="mui-table-view-cell">
-				<h4 style="float: left;">发布人：</h4>	
-				<p class="f18 mar5">王XX</p>
+				<h4 style="float: left;" >发布人：</h4>	
+				<p class="f18 mar5" ng-bind="notice.sendUserName"></p>
 			</li>		
 			<li class="mui-table-view-cell">
 				<h4>附件一览：</h4>	
-				<p class="f18 mar5">XXXXXX.doc<br/>XXXXXXX.xls</p>
+				<p class="f18 mar5" ng-bind="notice.attachedFiles"></p>
 			</li>				
 		</ul>
 		<div class="mui-button-row">
@@ -53,7 +53,42 @@
 	
 </div>
 <script type="text/javascript">
+	// 主控制
+    angular.module('app', ["ngCookies"])
+            .controller('indexCtrl', function ($scope, $http, $cookieStore) {
+                // 取得UserID
+                var userId = $cookieStore.get("ChangZhouOAUserID");  
+                // 取得salaryId	 通过Localtion获取工资ID
+                var noticeId = location.hash;                
+				console.log(noticeId.replace('#',''))
+                // 工资表一览取得
+                getNoticeInfo($scope, $http, userId,noticeId)                              
+            })
 
+	/**
+	 * 公告一览取得
+	 * @param $scope
+	 * @param $http
+	 * @param userId 用户ID
+	 * @param getStartRowNo 取得开始条数
+     * @param getCount 取得件数
+     */
+	function getNoticeInfo($scope, $http, userId, noticeId) {
+		// 参数编辑
+		var para = [{key: "userId", value: userId},
+			        {key: "salaryId", value: noticeId}];
+		$http.get("/oa/test_json/getNoticeInfo.json")
+				.success(function (response) {
+					if (response.status == 0000) {
+						console.log(response.msg);
+						//取得所有公告数据
+						$scope.notice = response
+                    } else if (response.status != 0000) {
+						console.log(response.msg);
+                        alert(response.msg);
+					}
+				})
+	};
 </script>
 </body>
 </html>
