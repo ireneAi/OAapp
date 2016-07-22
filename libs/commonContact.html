@@ -13,7 +13,7 @@
 	    <script src="../js/angular-cookies.js"></script>
 	</head>
 
-	<body class="commonc">
+	<body class="commonc" ng-app="app" ng-controller="indexCtrl">
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 			<h1 class="mui-title">个人通讯录</h1>
@@ -27,85 +27,201 @@
 							<form class="mui-input-group">
 								<div class="mui-input-row">
 									<label>姓名</label>
-									<input type="text" class="mui-input-clear" placeholder="姓名">
+									<input type="text" ng-model="search.name" class="mui-input-clear" placeholder="姓名">
 								</div>					
 								<div class="mui-input-row">
 									<label>职务</label>
-									<select>
-										<option value="item-1">职务</option>
-										<option value="item-2">职务2</option>
-										<option value="item-3">职务3</option>
-										<option value="item-4">职务4</option>
+									<select ng-model="search.positionCode">
+										<option value="职务">职务</option>
+										<option value="职务2">职务2</option>
+										<option value="职务3">职务3</option>
+										<option value="职务4">职务4</option>
 									</select>
 								</div>
 								<div class="mui-input-row">
 									<label>单位</label>
-									<input type="text" class="mui-input-clear" placeholder="单位名称">
+									<input type="text" ng-model="search.workUnit" class="mui-input-clear" placeholder="单位名称">
 								</div>
 								<div class="mui-button-row">
-									<button type="button" class="mui-btn mui-btn-primary" onclick="return false;">搜索</button>
+									<button ng-click="Search()" type="button" class="mui-btn mui-btn-primary" onclick="return false;">搜索</button>
 								</div>					
 							</form>		
 						</div>
 					</div>	
 				</div>												
 				<h4 class="title">个人通讯录</h4>
-				<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
-				<li class="mui-table-view-cell">
-					<div class="mui-slider-cell">
-						<div class="oa-contact-cell mui-table">
-							<div class="oa-contact-avatar mui-table-cell">
-								<img src="../images/user.png" />
-							</div>
-							<div class="oa-contact-content mui-table-cell">
-								<a href="c_contact.html">
-									<div class="mui-checkbox">
-										<input name="checkbox" value="Item 1" type="checkbox">
-									</div>
-									<div class="mui-clearfix">
-										<h4 class="oa-contact-name">叶文洁</h4>
-										<span class="oa-contact-position mui-h6">董事长</span>
-									</div>
-									<p class="oa-contact-email mui-h6">
-										yewenjie@sina.com
-									</p>
-								</a>
+				<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">					
+					<li class="mui-table-view-cell" ng-repeat="item in contact" >
+						<div class="mui-slider-cell">
+							<div class="oa-contact-cell mui-table">
+								<div class="oa-contact-avatar mui-table-cell" ng-click="deal(item.contactsId)">
+									<img src="{{item.photoUrl}}" />
+								</div>
+								<div class="oa-contact-content mui-table-cell">
+									<a href="c_contact.html">
+										<div class="mui-checkbox">
+											<input name="checkbox" ng-click="check(item.contactsId)" type="checkbox">
+										</div>
+										<div class="mui-clearfix" ng-click="deal(item.contactsId)">
+											<h4 class="oa-contact-name" ng-bind="item.name"></h4>
+											<span class="oa-contact-position mui-h6" ng-bind="item.positionName"></span>
+										</div>
+									</a>
+								</div>
 							</div>
 						</div>
-					</div>
-				</li>
-				<li class="mui-table-view-cell">
-					<div class="mui-slider-cell">
-						<div class="oa-contact-cell mui-table">
-							<div class="oa-contact-avatar mui-table-cell">
-								<img src="../images/user.png" />
-							</div>
-							<div class="oa-contact-content mui-table-cell">
-								<a href="c_contact.html">
-									<div class="mui-checkbox">
-										<input name="checkbox" value="Item 1" type="checkbox">
-									</div>								
-									<div class="mui-clearfix">
-										<h4 class="oa-contact-name">叶文洁</h4>
-										<span class="oa-contact-position mui-h6">董事长</span>
+					</li>
+					<li class="mui-table-view-cell" ng-repeat="item in searchResult">
+						<div class="mui-slider-cell">
+							<div class="oa-contact-cell mui-table">
+								<div class="oa-contact-avatar mui-table-cell" ng-click="deal(item.contactsId)">
+									<img src="{{item.photoUrl}}" />
+								</div>
+								<div class="oa-contact-content mui-table-cell">									
+									<div class="mui-checkbox" >
+										<input name="checkbox" ng-click="check(item.contactsId)" type="checkbox">
 									</div>
-									<p class="oa-contact-email mui-h6">
-										yewenjie@sina.com
-									</p>
-								</a>
+									<div class="mui-clearfix" ng-click="deal(item.contactsId)">
+										<h4 class="oa-contact-name" ng-bind="item.name"></h4>
+										<span class="oa-contact-position mui-h6" ng-bind="item.positionName"></span>
+									</div>									
+								</div>
 							</div>
 						</div>
-					</div>
-				</li>			
+					</li>
 				</ul>
 			</div>	
 			<div class="mui-bar mui-bar-tab">
-				<button type="button" class="mui-btn mui-btn-block mui-btn-primary" onclick="return false;">导入到个人通迅录</button>
+				<button type="button" ng-click="importContact()" class="mui-btn mui-btn-block mui-btn-primary" onclick="return false;">导入到个人通迅录</button>
 			</div>
 		</div>
 	</body>
 	<script src="../js/mui.min.js"></script>
 	<script>
-		
+	// 主控制
+    angular.module('app', ["ngCookies"])
+            .controller('indexCtrl', function ($scope, $http, $cookieStore) {
+                // 取得UserID
+                var userId = $cookieStore.get("ChangZhouOAUserID"); 
+                // 取得用户搜索条件 value  
+				// * @param name 姓名
+				// * @param positionCode 职务Code 
+				// * @param workUnit 单位
+                $scope.search = {name: "", positionCode: "",workUnit: ""};
+				
+                // 通讯录取得
+                getContactsInfo($scope, $http, userId)             
+
+                // 搜索按钮点击事件 
+                $scope.Search = function () {
+                	searchContactsInfo($scope, $http, userId)
+                }
+                
+                // 查看通讯录详情 
+                $scope.deal = function (contactsId) {
+                	window.location = 'c_contact.html#' + contactsId
+                }
+                
+                //按钮选择通讯录               
+                $scope.check = function (contactsId,index) {     
+                	//创建通讯录ID 不存在新建一个数组 已存在，有当前的数组
+                	$scope.contactsId = $scope.contactsId ? $scope.contactsId : [];                  	
+                	//检查数组中是否存在当前通讯录ID
+	                if($scope.contactsId.indexOf(contactsId) == -1){	                		  
+	                	//通讯录ID不存在数组中，传入数组
+	                	$scope.contactsId.push(contactsId)  
+	                	console.log($scope.contactsId)
+	                }else{	                	
+	                	//通讯录ID存在数组中，删除 
+	                	$scope.contactsId.splice($scope.contactsId.indexOf(contactsId),1)	                	
+	                	console.log($scope.contactsId)
+	                }
+                }
+                
+                //导入到个人通讯录
+				// * $scope.contactsId 通讯录ID
+				// * $scope.userId 用户ID
+                $scope.importContact = function(){
+                	// 参数编辑
+					var para = [{key: "userId", value: $scope.userId },
+								{key: "contactsId", value: $scope.contactsId}
+								];
+					if($scope.contactsId == undefined){
+						alert('请选择您要导入的通讯录')
+					}else{
+						console.log('您导入的通讯录ID:' + $scope.contactsId)
+					}					
+					$http.get("/oa/test_json/dealWorkRemind.json")
+						.success(function (response) {
+							if (response.status == 0000) {
+								//处理成功
+								console.log(response.msg);
+		                    } else if (response.status != 0000) {
+		                    	//处理异常
+								console.log(response.msg);
+		                        alert(response.msg);
+							}
+						})
+                }
+               
+            })
+ 				
+			/**
+			 * 通讯录一览取得
+			 * @param $scope
+			 * @param $http
+			 * @param userId 用户ID
+		     */
+			function getContactsInfo($scope, $http, userId) {
+				// 参数编辑
+				var para = [{key: "userId", value: userId}];
+				$http.get("/oa/test_json/getContactsList.json")
+						.success(function (response) {
+							if (response.status == 0000) {
+								console.log(response.msg);
+								//获取所有通讯录数据
+								$scope.contact = response.data;
+								$scope.contactsId = response.data.contactsId;
+		                    } else if (response.status != 0000) {
+								console.log(response.msg);
+		                        alert(response.msg);
+							}
+						})
+			};
+			
+			/**
+			 * 搜索结果一览取得
+			 * @param $scope
+			 * @param $http
+			 * @param userId 用户ID
+			 * @param name 姓名
+			 * @param positionCode 职务Code 
+			 * @param workUnit 单位
+			 * @param publicPrivateFlag 公共/个人	 
+		     */
+			function searchContactsInfo($scope, $http,userId) {
+				// 参数编辑
+				console.log($scope.search)
+				var para = [{key: "userId", value: userId},
+					        {key: "name", value: $scope.search.name},
+					        {key: "positionCode", value: $scope.search.positionCode},
+					        {key: "workUnit", value: $scope.search.workUnit},
+					        {key: "publicPrivateFlag", value : 1 } //1：公共  2：个人
+							];
+				//重置默认通讯录
+				$scope.contact = ''
+				$http.get("/oa/test_json/getContactsListS.json")
+						.success(function (response) {
+							if (response.status == 0000) {
+								console.log(response.msg);
+								//获取搜索结果数据
+								$scope.searchResult = response.data;
+		                    } else if (response.status != 0000) {
+								console.log(response.msg);
+		                        alert(response.msg);
+							}
+						})
+			};
+
 	</script>
 </html>
