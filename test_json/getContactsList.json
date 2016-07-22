@@ -1,0 +1,6 @@
+{"status":"0000","msg":"成功，系统处理正常",
+"data":[
+{"contactsId":"001","name":"嘎嘎嘎","positionName":"老师","photoUrl":"../images/user.png"},
+{"contactsId":"002","name":"王麦曦","positionName":"校长","photoUrl":"../images/user.png"},
+{"contactsId":"003","name":"王老师","positionName":"副校长","photoUrl":"../images/user.png"}
+]}

@@ -32,13 +32,13 @@
 					<form class="mui-input-group">				
 						<div class="mui-input-row">
 							<label>事项类型</label>
-							<select ng-model="todoType">
+							<select ng-selected="todoType">
 								<option ng-repeat="item in todoTypeList" value="{{item.toDoTypeCode}}">{{item.toDoTypeName}}</option>
 							</select>
 						</div>
 						<div class="mui-input-row">
 							<label>内容</label>
-							<input type="text" class="mui-input-clear" placeholder="内容" ng-model="todoContent">
+							<input type="text" class="mui-input-clear" placeholder="内容" ng-value="todoContent">
 						</div>	
 						<div class="mui-input-row">
 							<label>日期</label>
@@ -79,20 +79,23 @@
 				// 取得件数
 				var getCount = 20;
 
-                //$scope.sendTime = "选择日期...";
-
 				// 取得事项类型
 				getToDoTypeList($scope, $http, userId);
 
+                // 取得检索条件
+                if ($cookieStore.get("ChangZhouOAFromPage") != "index") {
+                    getSearchCondition($scope, $cookieStore);
+                }
+
 				// 取得已办事项一览
-				getToDoList($scope, $http, userId, 1, getCount, "", "", "");
+				getToDoList($scope, $http, $cookieStore, userId, 1, getCount, $scope.todoType, $scope.todoContent, document.getElementById("dataInput").val);
 
 				// 取得更多点击事件
 				$scope.getMore = function () {
 					// 取得件数改为99999999（取得全数据）
 					getCount = 99999999;
 					// 已办事项一览取得
-					getToDoList($scope, $http, userId, 1, getCount, $scope.todoType, $scope.todoContent, document.getElementById("dataInput").val);
+					getToDoList($scope, $http, $cookieStore, userId, 1, getCount, $scope.todoType, $scope.todoContent, document.getElementById("dataInput").val);
 				}
 
 				// 检索按钮点击事件
@@ -100,11 +103,13 @@
 					// 取得件数改为99999999（取得全数据）
 					getCount = 20;
 					// 已办事项一览取得
-					getToDoList($scope, $http, userId, 1, getCount, $scope.todoType, $scope.todoContent, document.getElementById("dataInput").val);
+					getToDoList($scope, $http, $cookieStore, userId, 1, getCount, $scope.todoType, $scope.todoContent, document.getElementById("dataInput").val);
 				}
 
 				// 查看已办事项
 				$scope.deal = function (toDoId) {
+                    // 设定迁移前画面
+                    $cookieStore.put("ChangZhouOAFromPage", "hasDone");
 					// 跳转至代办事项详细页 通过location传递代办事项ID
 					window.location = 'h_main.html#' + toDoId;
 				}
@@ -124,6 +129,7 @@
 					if (response.status == 0000) {
 						console.log(response.msg);
 						$scope.todoTypeList = response.data;
+                        $scope.todoTypeList.unshift({toDoTypeCode:"",toDoTypeName:""})
 					} else if (response.status != 0000) {
 						console.log(response.msg);
 						alert(response.msg);
@@ -135,6 +141,7 @@
 	 * 取得已办事项一览
 	 * @param $scope
 	 * @param $http
+     * @param $cookieStore
 	 * @param userId 用户ID
 	 * @param getStartRowNo 取得开始条数
 	 * @param getCount 取得件数
@@ -142,7 +149,7 @@
 	 * @param content 内容
 	 * @param sendTime 发布时间
 	 */
-	function getToDoList($scope, $http, userId, getStartRowNo, getCount, toDoTypeCode, content, sendTime) {
+	function getToDoList($scope, $http, $cookieStore, userId, getStartRowNo, getCount, toDoTypeCode, content, sendTime) {
 		// 参数编辑
 		var para = [{key: "userId", value: userId},
 			{key: "getStartRowNo", value: getStartRowNo},
@@ -167,12 +174,60 @@
 						console.log(response.msg);
 						$scope.todoList = response.data;
 						$scope.isHaveMore =  response.isHaveMore;
+                        saveSearchCondition($scope, $cookieStore, toDoTypeCode, content, sendTime);
 					} else if (response.status != 0000) {
 						console.log(response.msg);
 						alert(response.msg);
 					}
 				})
 	}
+
+    /**
+     * 保存检索条件
+     * @param $scope
+     * @param $cookieStore
+     * @param getCount 取得件数
+     * @param toDoTypeCode 事项类型
+     * @param content 内容
+     */
+    function saveSearchCondition($scope, $cookieStore, toDoTypeCode, content, sendTime) {
+        // 事项类型检索条件
+        if (toDoTypeCode && toDoTypeCode != "") {
+            $cookieStore.put("ChangZhouOAHasDoneCondition_toDoTypeCode", toDoTypeCode);
+        }
+        // 内容
+        if (content && content != "") {
+            $cookieStore.put("ChangZhouOAHasDoneCondition_content", content);
+        }
+        // 发布时间
+        if (sendTime && sendTime != "") {
+            $cookieStore.put("ChangZhouOAHasDoneCondition_sendTime", sendTime);
+        }
+    }
+
+    /**
+     * 取得检索条件
+     * @param $scope
+     * @param $cookieStore
+     */
+    function getSearchCondition($scope, $cookieStore) {
+        // 事项类型检索条件
+        var toDoTypeCode = $cookieStore.get("ChangZhouOAHasDoneCondition_toDoTypeCode");
+        if (toDoTypeCode && toDoTypeCode != "") {
+            $scope.toDoTypeCode = toDoTypeCode;
+        }
+        // 内容
+        var content = $cookieStore.get("ChangZhouOAHasDoneCondition_content");
+        if (content && content != "") {
+            $scope.content = content;
+        }
+        // 发布时间
+        var sendTime = $cookieStore.get("ChangZhouOAHasDoneCondition_sendTime");
+        if (sendTime && sendTime != "") {
+            document.getElementById("dataInput").val = sendTime;
+            document.getElementById("data1").innerHTML = sendTime;
+        }
+    }
 
 	//日期
 	(function($) {

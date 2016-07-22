@@ -14,10 +14,10 @@
 	    <script src="../js/angular-cookies.js"></script>		
 	</head>
 
-	<body>
+	<body ng-app="app" ng-controller="indexCtrl">
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">叶文洁的个人名片</h1>
+			<h1 class="mui-title">{{name}}的个人名片</h1>
 		</header>
 		<div class="mui-content">			
 			<ul class="mui-card">
@@ -25,25 +25,25 @@
 				<div class="mui-slider-cell">
 					<div class="oa-contact-cell mui-table">
 						<div class="oa-contact-avatar mui-table-cell">
-							<img src="../images/user.png" />
+							<img src="{{photoUrl}}" />
 						</div>
 						<div class="oa-contact-content mui-table-cell">
 							<div class="mui-clearfix">
-								<h4 class="oa-contact-name">叶文洁</h4>
-								<h5 class="oa-contact-position mui-h6">董事长</h5>
+								<h4 class="oa-contact-name">{{name}}</h4>
+								<h5 class="oa-contact-position mui-h6">{{positionName}}</h5>
 							</div>
 						</div>
 					</div>
 				</div>
 			</li>				
 			<li class="mui-table-view-cell">
-				<label class="mui-left">手机：</label><span class="mui-left">18600213659</span>
+				<label class="mui-left">手机：</label><span class="mui-left"><a href="tel:{{mobile}}">{{mobile}}</a></span>
 			</li>				
 			<li class="mui-table-view-cell">
-				<label>座机：</label><span class="mui-left">55555555</span>
+				<label>座机：</label><span class="mui-left"><a href="tel:{{telephone}}">{{telephone}}</a></span>
 			</li>				
 			<li class="mui-table-view-cell">
-				<label>邮箱：</label><span class="mui-left">xxxx@bbbb.com</span>
+				<label>邮箱：</label><span class="mui-left">{{eMail}}</span>
 			</li>		
 			</ul>			
 		</div>
@@ -53,6 +53,46 @@
 	</body>
 	<script src="../js/mui.min.js"></script>
 	<script>
-		
+		// 主控制
+		angular.module('app', ["ngCookies"])
+				.controller('indexCtrl', function ($scope, $http, $cookieStore) {
+					// 取得UserID
+					var userId = $cookieStore.get("ChangZhouOAUserID");
+					// 取得通讯录ID
+					var contactsId = location.hash.replace('#','');
+
+					// 取得个人通讯录信息
+					getContactsInfo($scope, $http, userId, contactsId);
+				})
+
+		/**
+		 * 通讯录详细取得
+		 * @param $scope
+		 * @param $http
+		 * @param userId 用户ID
+		 * @param contactsId 通讯录ID
+		 */
+		function getContactsInfo($scope, $http, userId, contactsId) {
+			// 参数编辑
+			var para = [{key: "userId", value: userId},
+				{key: "contactsId", value: contactsId},
+				{key: "publicPrivateFlag", value: 2}];
+			$http.get("/oa/test_json/getContactsInfo.json")
+					.success(function (response) {
+						if (response.status == 0000) {
+							console.log(response.msg);
+							$scope.contactsId = response.contactsId;
+							$scope.name = response.name;
+							$scope.positionName = response.positionName;
+							$scope.photoUrl = response.photoUrl;
+							$scope.mobile = response.mobile;
+							$scope.telephone = response.telephone;
+							$scope.eMail = response.eMail;
+						} else if (response.status != 0000) {
+							console.log(response.msg);
+							alert(response.msg);
+						}
+					})
+		}
 	</script>
 </html>

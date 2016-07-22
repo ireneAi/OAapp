@@ -105,32 +105,46 @@
                 $scope.itemClick = function (flag) {
                     switch (flag) {
                         case '1':
+                            // 设定迁移前画面
+                            $cookieStore.put("ChangZhouOAFromPage", "index");
                             // 工作提醒
-                             window.location = 'libs/jobRemind.html';
+                            window.location = 'libs/jobRemind.html';
                             break;
                         case '2':
+                            // 设定迁移前画面
+                            $cookieStore.put("ChangZhouOAFromPage", "index");
                             // 待办事项
-                             window.location = 'libs/todoList.html';
+                            window.location = 'libs/todoList.html';
                             break;
                         case '3':
+                            // 设定迁移前画面
+                            $cookieStore.put("ChangZhouOAFromPage", "index");
                             // 已办事项
-                             window.location = 'libs/hasDone.html';
+                            window.location = 'libs/hasDone.html';
                             break;
                         case '4':
+                            // 设定迁移前画面
+                            $cookieStore.put("ChangZhouOAFromPage", "index");
                             // 通知公告
-                             window.location = 'libs/announcement.html';
+                            window.location = 'libs/announcement.html';
                             break;
                         case '5':
+                            // 设定迁移前画面
+                            $cookieStore.put("ChangZhouOAFromPage", "index");
                             // 公共通讯录
-                             window.location = 'libs/commonContact.html';
+                            window.location = 'libs/commonContact.html';
                             break;
                         case '6':
+                            // 设定迁移前画面
+                            $cookieStore.put("ChangZhouOAFromPage", "index");
                             // 个人通讯录
-                             window.location = 'libs/PersonalContact.html';
+                            window.location = 'libs/PersonalContact.html';
                             break;
                         case '7':
+                            // 设定迁移前画面
+                            $cookieStore.put("ChangZhouOAFromPage", "index");
                             // 个人工资
-                             window.location = 'libs/wages.html';
+                            window.location = 'libs/wages.html';
                             break;
                     }
                 }
